@@ -1,25 +1,92 @@
-from otree.api import Currency as c, currency_range, safe_json
-from ._builtin import Page, WaitPage
-from .models import Constants, Player
+from otree.api import *
+from .models import *
 
-#This is the pages.py file. Here we structure how our pages and pagesequence function.
-#Each page has its own class where you always specify form_model = Player as we have players for each page
-#and we have the form_fields in a list which indicate the variables we have on that page. There will be
-#more functionality added here but this is a good start. 
+class WelcomePage(Page):
+    template_name = 'global/WelcomePage.html'
 
-class Welcome(Page):
-    form_model = Player
-    form_fields = ['entry_question']
+class PolicyIssuePage(Page):
+    form_model = 'player'
+    form_fields = ['text_question']
+    template_name = 'global/SurveyPage.html'
 
-class DemoPage(Page):
-    form_model = Player
-    form_fields = ['age_question']
+    def vars_for_template(self):
+        return {
+            'page_title': 'Policies',
+            'question_text': 'In your opinion, what is the most important policy issue at the moment? Please state only one issue.',
+            'question_type': 'text',
+            'question_name': 'text_question'
+        }
+
+class VotingDecisionPage(Page):
+    form_model = 'player'
+    form_fields = ['party_vote_question']
+    template_name = 'global/SurveyPage.html'
+
+    def vars_for_template(self):
+        return {
+            'page_title': 'Voting decision',
+            'question_text': 'If the federal election were held next Sunday, which party would you vote?',
+            'question_type': 'choice',
+            'question_name': 'party_vote_question',
+            'choices': ['CDU / CSU', 'SPD', 'GRÜNE', 'FDP', 'DIE LINKE', 'AfD', 'FW', 'BSW', 'Another party', 'I would not vote', 'None of the above']
+        }
+
+# Sociodemographics
+
+class NumericQuestionPage(Page):
+    form_model = 'player'
+    form_fields = ['numeric_question']
+    template_name = 'global/SurveyPage.html'
+
+    def vars_for_template(self):
+        return {
+            'page_title': 'Sociodemographics',
+            'question_text': 'Please provide your age:',
+            'question_type': 'numeric',
+            'question_name': 'numeric_question'
+        }
+
+class GenderQuestionPage(Page):
+    form_model = 'player'
+    form_fields = ['gender_question']
+    template_name = 'global/SurveyPage.html'
+
+    def vars_for_template(self):
+        return {
+            'page_title': 'Sociodemographics',
+            'question_text': 'Please specify your gender:',
+            'question_type': 'choice',
+            'question_name': 'gender_question',
+            'choices': ['Female', 'Male', 'Diverse', 'I do not want to specify a gender']
+        }
+
+class RegionQuestionPage(Page):
+    form_model = 'player'
+    form_fields = ['region_question']
+    template_name = 'global/SurveyPage.html'
+
+    def vars_for_template(self):
+        return {
+            'page_title': 'Sociodemographics',
+            'question_text': 'Please specify your region:',
+            'question_type': 'choice',
+            'question_name': 'region_question',
+            'choices': ['Baden-Württemberg', 'Bayern', 'Berlin', 'Brandenburg', 'Bremen', 'Hamburg', 
+                        'Hessen', 'Mecklenburg-Vorpommern', 'Niedersachsen', 'Nordrhein-Westfalen', 
+                        'Rheinland-Pfalz', 'Saarland', 'Sachsen', 'Sachsen-Anhalt', 'Schleswig-Holstein', 
+                        'Thüringen', 'I have German citizenship and live abroad', 'None of the above']
+        }
 
 class EndPage(Page):
-    #style: this is a good example of the style 'CamelCase' that one normally uses for classes
-    form_model = Player
+    template_name = 'global/EndPage.html'
 
-#Here we define in which ordering we want the pages to be shown. We always start with a Welcome page and end with an End page.
-page_sequence = [Welcome,
-                DemoPage,           
-                EndPage]
+# Define the sequence of pages to show
+page_sequence = [
+    WelcomePage,
+    PolicyIssuePage,        # policy issue question (open text)
+    VotingDecisionPage,     # voting decision question (multiple-choice)
+    NumericQuestionPage,    # age question (numeric)
+    GenderQuestionPage,     # gender question (multiple-choice)
+    RegionQuestionPage,     # region question (multiple-choice)
+    EndPage
+]

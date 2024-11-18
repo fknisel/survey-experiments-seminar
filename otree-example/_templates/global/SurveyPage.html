@@ -1,0 +1,35 @@
+{% extends "global/Page.html" %}
+{% block title %}2025 Bundestagswahl poll{% endblock %}
+{% block content %}
+<h3>{{ page_title }}</h3>
+<p>{{ question_text }}</p>
+
+<!-- Numeric Answer -->
+{% if question_type == 'numeric' %}
+<input type="number" name="{{ question_name }}" min="0" required>
+{% endif %}
+
+<!-- Open Text Answer -->
+{% if question_type == 'text' %}
+<textarea name="{{ question_name }}" rows="4" required></textarea>
+{% endif %}
+
+<!-- Multiple-Choice Question -->
+{% if question_type == 'choice' %}
+{% for choice in choices %}
+<div>
+    <input type="radio" name="{{ question_name }}" value="{{ choice }}" required>
+    <label>{{ choice }}</label>
+</div>
+{% endfor %}
+{% endif %}
+
+<button class="otree-btn-next btn btn-primary next-button otree-next-button">
+    Next
+</button>
+<!-- <button type="submit">Next</button> -->
+{% endblock %}
+
+
+
+
